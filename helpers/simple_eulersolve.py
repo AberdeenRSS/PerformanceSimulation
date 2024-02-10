@@ -37,7 +37,7 @@ def eulersolve_while_positive(func, t_initial, x_initial, dt):
     i = 0
 
     while x[0] >= 0:
-        delta = dt*func(x, t)
+        delta = dt*func(x, t, dt=dt)
         x = x + delta
         t = t + dt
 

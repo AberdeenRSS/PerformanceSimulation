@@ -96,27 +96,31 @@ def get_mach_24_rocket(stages: list[Mach24Stage], launch_angle: float, drag_coef
 
         cur_inertia = sum([ 0.5 * (s.dry_mass + s.fuel_mass/2) * s.radius * s.radius for s in islice(stages, cur_stage_index, None)]) # Approximation (no mass loss considered)
 
+        return 0 if cur_stage_index < 1 else stages[cur_stage_index-1].dry_mass
+
     stage(0)
 
-    def rocket(x, t): #x is position, velocity and mass at time t
+    def rocket(x, t, **kwargs): #x is position, velocity and mass at time t
+
+        dt = kwargs['dt']
 
         cur_stage = stages[cur_stage_index]
+        delta_mass = 0
 
         if t > next_stage_time and (cur_stage_index + 1) < len(stages):
-            stage(t)
+            delta_mass -= stage(t)*(1/dt)
             cur_stage = stages[cur_stage_index]
 
         old_position = x[0]
         old_velocity = x[1]
         mass = x[2]
         old_angular_acceleration = x[3]
-        delta_mass = 0
 
         force = 0
 
         if t >= cur_stage_burn_start and t < cur_stage_burn_end:
             force = cur_stage.thrust
-            delta_mass = -cur_stage.fuel_mass_loss()
+            delta_mass -= cur_stage.fuel_mass_loss()
 
         angle_effective = angle_radians - (0 if old_angular_acceleration == 0 else atan2((old_angular_acceleration * cur_stage.radius), old_velocity))
 
