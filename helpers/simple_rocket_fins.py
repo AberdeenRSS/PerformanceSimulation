@@ -44,8 +44,7 @@ def get_simple_rocket_FINS_change_equation_and_conditions(burn_time, thrust, fue
 
         inertia = 0.5 * mass * r*r        #inertia vector, for a uniform cylinder: 0.5 * m * r^2
 
-
-        air_resistance = pow(old_velocity, 2) * 1/2 * pow(radius, 2) * pi * cp
+        air_resistance = pow(old_velocity, 2) * 1/2 * pow(radius, 2) * pi * 0.5
 
         air_resistance += F_drag_y    #air resistance plus drag from spinning
 
